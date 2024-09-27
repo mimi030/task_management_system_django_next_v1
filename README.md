@@ -58,8 +58,8 @@ If you use this project in your work or build upon it, please give proper credit
 
 - **Security**
    - **Content Security Policy (CSP) Settings:** 
-   - To protect against XSS attacks, ensure you configure the CSP in your application.
-   - Adjust these settings on backend (task_management_system) and frontend based on your application’s requirements.
+     - To protect against XSS attacks, ensure you configure the CSP in your application.
+     - Adjust these settings on backend (task_management_system) and frontend based on your application’s requirements.
 
 ## Technologies Used
 - **Frontend**: React, Next.js, TypeScript, Tailwind CSS
