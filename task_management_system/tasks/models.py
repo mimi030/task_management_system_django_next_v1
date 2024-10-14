@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import CustomUser
 
+
 class Project(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
@@ -14,6 +15,7 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Task(models.Model):
     project = models.ForeignKey(Project, related_name='tasks', on_delete=models.CASCADE)
@@ -35,7 +37,8 @@ class Task(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class Comment(models.Model):
     task = models.ForeignKey(Task, related_name='comments', on_delete=models.CASCADE)
     author = models.ForeignKey(CustomUser, related_name='user_comments', on_delete=models.CASCADE)
@@ -48,6 +51,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.author.username} on {self.task.name}'
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=30, unique=True)

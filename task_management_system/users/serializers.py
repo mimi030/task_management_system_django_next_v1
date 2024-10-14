@@ -1,6 +1,7 @@
 from djoser import serializers
 from .models import CustomUser
 
+
 class UserCreateSerializer(serializers.UserCreateSerializer):
     class Meta(serializers.UserCreateSerializer.Meta):
         model = CustomUser
@@ -13,6 +14,7 @@ class UserCreateSerializer(serializers.UserCreateSerializer):
             'last_name',
             'role'
         )
+
 
 class UserSerializer(serializers.UserCreateSerializer):
     class Meta(serializers.UserCreateSerializer):

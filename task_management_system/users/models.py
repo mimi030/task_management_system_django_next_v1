@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin
 )
 
+
 class CustomUserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -19,7 +20,7 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self.db)
         return user
-    
+
     # Default Setting for Superuser
     def create_superuser(self, username, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -30,9 +31,10 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-        
+
         return self.create_user(username=username, email=email, password=password, **extra_fields)
-    
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     ADMIN = 'Admin'
     PROJECT_OWNER = 'Project Owner'
@@ -57,7 +59,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    
+
     objects = CustomUserManager()
 
     EMAIL_FIELD = 'email'
@@ -71,13 +73,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         full_name = f"{self.first_name} {self.last_name}".strip()
         return full_name
-    
+
     def get_short_name(self):
         return self.first_name
-    
+
     def get_role(self):
         return self.role
-    
+
     def __str__(self):
         return self.email
- 

@@ -1,12 +1,14 @@
 from rest_framework import permissions
 from .models import CustomUser
 
+
 class IsAdmin(permissions.BasePermission):
     """
     Custom permission to allow admin to access
     """
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role == CustomUser.ADMIN
+
 
 class IsRegisteredUser(permissions.BasePermission):
     """
@@ -17,6 +19,7 @@ class IsRegisteredUser(permissions.BasePermission):
         # so we'll always allow GET, HEAD or OPTIONS request.
         if request.method in permissions.SAFE_METHODS:
             return True
+
 
 class IsGuest(permissions.BasePermission):
     """
