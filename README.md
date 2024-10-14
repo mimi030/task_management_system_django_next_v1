@@ -275,7 +275,7 @@ Authorization: Bearer <token>
 The following features and improvements are planned for future updates in this repository:
 
 - **Add Timeline Schedule**: Implement a calendar view to display projects and tasks.
-- **Continuous Integration**: Set up CI to run tests and linting automatically.
+- **Optimize CI Pipeline**: Enhance existing automated testing and linting to improve code quality and robustness, with potential for future CD integration.
 - **Code Refactoring**: Improve code quality and structure.
 - **Expand Test Coverage**: Add more tests to ensure robustness.
 
