@@ -1,0 +1,56 @@
+name: Lint Code
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.11]
+        node-version: [18]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up Python for Flake8
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Python Dependencies
+        run: |
+          cd task_management_system
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Run Flake8
+        run: |
+          cd task_management_system
+          flake8 .
+
+      # Set up Node.js for ESLint
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run ESLint
+        run: |
+          cd frontend
+          npx eslint . --ext .ts,.tsx

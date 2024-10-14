@@ -1,0 +1,4 @@
+[flake8]
+exclude = venv/, */venv/, .git, __pycache__, migrations
+ignore = E501
+max-line-length = 88
