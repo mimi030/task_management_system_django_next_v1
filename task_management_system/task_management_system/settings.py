@@ -81,8 +81,8 @@ CSRF_TRUSTED_ORIGINS = [
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_IMG_SRC = ("'self'", "data:")
 CSP_CONNECT_SRC = (
-    "'self'", 
-    "http://localhost:8000", 
+    "'self'",
+    "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:3000",
     "http://127.0.0.1:3000"
@@ -228,12 +228,14 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-   'AUTH_HEADER_TYPES': ('Bearer',),
-   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-   'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-   'AUTH_TOKEN_CLASSES': (
-       'rest_framework_simplejwt.tokens.AccessToken',
-   )
+    'AUTH_HEADER_TYPES': (
+        'Bearer',
+    ),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_TOKEN_CLASSES': (
+        'rest_framework_simplejwt.tokens.AccessToken',
+    )
 }
 
 # Email Setup with SMTP for Production
@@ -253,19 +255,19 @@ DOMAIN = ("localhost:3000")
 SITE_NAME = ('Task Management System Site')
 
 DJOSER = {
-   'LOGIN_FIELD': 'email',
-   'USER_CREATE_PASSWORD_RETYPE': True,
-   'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
-   'SEND_CONFIRMATION_EMAIL': True,
-   'SET_PASSWORD_RETYPE': True,
-   'PASSWORD_RESET_CONFIRM_URL': 'auth/password/reset-password-confirmation/?uid={uid}&token={token}',
-   'PASSWORD_RESET_CONFIRM_RETYPE': True,
-   'ACTIVATION_URL': 'auth/activation/?uid={uid}&token={token}',
-   'SEND_ACTIVATION_EMAIL': True,
-   'SERIALIZERS': {
-       'user_create': 'users.serializers.UserCreateSerializer',
-       'user': 'users.serializers.UserSerializer',
-       'current_user': 'users.serializers.UserSerializer',
-       'user_delete': 'djoser.serializers.UserDeleteSerializer',
-   }
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'auth/password/reset-password-confirmation/?uid={uid}&token={token}',
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
+    'ACTIVATION_URL': 'auth/activation/?uid={uid}&token={token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.UserCreateSerializer',
+        'user': 'users.serializers.UserSerializer',
+        'current_user': 'users.serializers.UserSerializer',
+        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+    }
 }

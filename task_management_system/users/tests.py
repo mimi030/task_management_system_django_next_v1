@@ -1,3 +1,10 @@
 from django.test import TestCase
 
-# Create your tests here.
+
+# Test (TBC)
+class UserTestCase(TestCase):
+    def setUp(self):
+        pass
+
+    def test_users_can_register(self):
+        pass

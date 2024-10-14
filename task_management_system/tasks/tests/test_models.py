@@ -5,6 +5,7 @@ from django.urls import reverse
 from users.models import CustomUser
 from tasks.models import Project
 
+
 class ProjectViewSetTest(APITestCase):
     def setUp(self):
         self.user = CustomUser.objects.create_user(

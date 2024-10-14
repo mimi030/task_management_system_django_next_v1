@@ -1,0 +1,149 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  backend:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.11]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          
+      - name: Install Backend Dependencies
+        working-directory: task_management_system
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 # Install Flake8 for linting
+
+      - name: Set Backend Environment Variables
+        run: |
+          echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DEBUG=True" >> $GITHUB_ENV
+          echo "ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> $GITHUB_ENV
+          
+      - name: Run Tests
+        working-directory: task_management_system
+        run: |
+          source venv/bin/activate
+          python manage.py test
+
+  frontend:
+  
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version: '18' # optional
+          # File containing the version Spec of the version to use.  Examples: package.json, .nvmrc, .node-version, .tool-versions.           
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Set Frontend Envioronment Variables
+        run: |
+          echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> $GITHUB_ENV
+        
+      - name: Build Frontend
+        working-directory: frontend
+        run: npm run build
+
+  playwright-tests:
+  
+    timeout-minutes: 60
+    
+    runs-on: ubuntu-latest    
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
+        
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm install
+          
+      - name: Install Playwright Browsers
+        run: |
+          npx playwright install --with-deps
+          
+      - name: Start Frontend Server
+        working-directory: frontend
+        run: |
+          npm run dev &
+          echo $! > frontend_pid.txt
+        
+      - name: Run Playwright Tests
+        working-directory: frontend
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+          
+      - name: Upload Playwright Test Reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: frontend/blob-report
+          retention-days: 1
+
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [playwright-tests]
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      working-directory: frontend
+      run: npm ci
+
+    - name: Download blob reports from GitHub Actions Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: frontend/all-blob-reports
+        pattern: blob-report-*
+        merge-multiple: true
+
+    - name: Merge into HTML Report
+      working-directory: frontend
+      run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+    - name: Upload HTML report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report--attempt-${{ github.run_attempt }}
+        path: frontend/playwright-report
+        retention-days: 14
